@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     // serialization plugin
     alias(libs.plugins.kotlin.serialization)
+    // ksp
+    id("com.google.devtools.ksp")
+    // hilt
+    id("com.google.dagger.hilt.android")
 
 }
 
@@ -74,4 +78,24 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     // serialization lib
     implementation(libs.kotlinx.serialization.json)
+    // hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    // hilt-navigation integration
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    // room
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    // gson converter
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    // gson itself
+    implementation("com.google.code.gson:gson:2.11.0")
+
+
+
 }
+
+
