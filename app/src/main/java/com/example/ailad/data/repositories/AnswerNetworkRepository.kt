@@ -14,7 +14,7 @@ import javax.inject.Inject
 class AnswerNetworkRepository @Inject constructor(
     private val api: RTULabApi
 ) {
-    suspend fun getAnswer(prompt: String): NetworkResponse<MessageNetworkEntity> {
+    suspend fun fetchAnswer(prompt: String): NetworkResponse<MessageNetworkEntity> {
         return try {
             Log.d("AnswerNetworkRepository", "generating message with prompt: $prompt")
 

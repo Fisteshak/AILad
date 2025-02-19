@@ -2,10 +2,7 @@ package com.example.ailad.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ailad.data.Error
-import com.example.ailad.data.Exception
-import com.example.ailad.data.Success
-import com.example.ailad.data.repositories.AnswerNetworkRepository
+import com.example.ailad.data.repositories.AnswerRepository
 import com.example.ailad.domain.entities.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,26 +14,29 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repo: AnswerNetworkRepository
+    private val repo: AnswerRepository
 ) : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(mutableListOf())
     val messages = _messages.asStateFlow()
 
-    fun generate(prompt: String) {
+
+    init {
+        // data update coroutine
         viewModelScope.launch {
-            _messages.update { it.plus(Message(prompt, LocalDateTime.now(), false, false)) }
-            when (val messageResponse = repo.getAnswer(prompt)) {
-                is Success -> {
-                    _messages.update { it.plus(Message(messageResponse.data, true)) }
-
-                }
-
-                is Error -> {}
-                is Exception -> {}
+            repo.getMessagesFlow().collect { new ->
+                _messages.update { new }
             }
-
         }
     }
+
+    fun generate(prompt: String) {
+        viewModelScope.launch {
+            repo.insertMessage(Message(prompt, LocalDateTime.now(), false, false))
+
+            repo.fetchAnswer(prompt)
+        }
+    }
+
 
 
 }

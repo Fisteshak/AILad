@@ -1,7 +1,9 @@
 package com.example.ailad.domain.entities
 
+import com.example.ailad.data.entities.MessageEntity
 import com.example.ailad.data.entities.MessageNetworkEntity
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 data class Message(
     val text: String,
@@ -16,4 +18,14 @@ data class Message(
         isResponse
     )
 
+
+}
+
+fun MessageEntity.asMessage(): Message {
+    return Message(
+        text,
+        LocalDateTime.ofEpochSecond(date, 0, ZoneOffset.UTC),
+        isFavorite,
+        isResponse
+    )
 }

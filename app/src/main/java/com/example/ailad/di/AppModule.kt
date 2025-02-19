@@ -1,11 +1,16 @@
 package com.example.ailad.di
 
+import android.content.Context
+import androidx.room.Room
 import com.example.ailad.data.api.LlamaApi
 import com.example.ailad.data.api.RTULabApi
+import com.example.ailad.data.db.AppDatabase
+import com.example.ailad.data.db.MessageDao
 import com.example.ailad.data.repositories.AnswerNetworkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -89,27 +94,27 @@ object RepositoryModule {
 
 }
 
-//@Module
-//@InstallIn(SingletonComponent::class)
-//object RoomModule {
-//    @Volatile
-//    private var Instance: AppDatabase? = null
-//
-//    @Provides
-//    @Singleton
-//    fun currencyDatabase(@ApplicationContext context: Context): AppDatabase {
-//        // if the Instance is not null, return it, otherwise create a new database instance.
-//        return Instance ?: synchronized(this) {
-//            Room.databaseBuilder(context, AppDatabase::class.java, "currency_database")
-//                .build()
-//                .also { Instance = it }
-//        }
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideCurrencyDao(database: AppDatabase): MessageDao {
-//        return database.messageDao()
-//    }
-//
-//}
+@Module
+@InstallIn(SingletonComponent::class)
+object RoomModule {
+    @Volatile
+    private var Instance: AppDatabase? = null
+
+    @Provides
+    @Singleton
+    fun currencyDatabase(@ApplicationContext context: Context): AppDatabase {
+        // if the Instance is not null, return it, otherwise create a new database instance.
+        return Instance ?: synchronized(this) {
+            Room.databaseBuilder(context, AppDatabase::class.java, "main_database")
+                .build()
+                .also { Instance = it }
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrencyDao(database: AppDatabase): MessageDao {
+        return database.messageDao()
+    }
+
+}
