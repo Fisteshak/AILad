@@ -97,7 +97,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     // coroutines
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-
+    // integration of hilt with navigation
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 
 

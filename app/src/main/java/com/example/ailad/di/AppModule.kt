@@ -6,6 +6,7 @@ import com.example.ailad.data.api.LlamaApi
 import com.example.ailad.data.api.RTULabApi
 import com.example.ailad.data.db.AppDatabase
 import com.example.ailad.data.db.MessageDao
+import com.example.ailad.data.db.RAGDao
 import com.example.ailad.data.repositories.AnswerNetworkRepository
 import dagger.Module
 import dagger.Provides
@@ -113,8 +114,14 @@ object RoomModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyDao(database: AppDatabase): MessageDao {
+    fun provideMessageDao(database: AppDatabase): MessageDao {
         return database.messageDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRAGDao(database: AppDatabase): RAGDao {
+        return database.RAGDao()
     }
 
 }

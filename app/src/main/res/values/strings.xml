@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">AILad</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_person">Add person</string>
+    <string name="imagine_you_are">Imagine that you are…</string>
+    <string name="name_can_t_be_empty">Name can\'t be empty!</string>
+    <string name="edit_person">Edit person</string>
 </resources>
