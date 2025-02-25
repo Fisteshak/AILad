@@ -1,4 +1,4 @@
-package com.example.ailad.domain.entities
+package com.example.ailad.entities
 
 import com.example.ailad.data.entities.MessageEntity
 import com.example.ailad.data.entities.MessageNetworkEntity

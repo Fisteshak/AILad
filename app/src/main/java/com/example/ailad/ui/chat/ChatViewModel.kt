@@ -1,11 +1,10 @@
-package com.example.ailad.ui
+package com.example.ailad.ui.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ailad.data.repositories.AnswerRepository
 import com.example.ailad.data.repositories.RAGRepository
-import com.example.ailad.domain.entities.Message
-import com.example.ailad.domain.entities.Person
+import com.example.ailad.entities.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,16 +14,12 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class ChatViewModel @Inject constructor(
     private val messageRepository: AnswerRepository,
-    private val ragRepository: RAGRepository
-
+    private val ragRepository: RAGRepository,
 ) : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(mutableListOf())
     val messages = _messages.asStateFlow()
-
-    private val _persons = MutableStateFlow<List<Person>>(mutableListOf())
-    val persons = _persons.asStateFlow()
 
     init {
         // messages update coroutine
@@ -34,12 +29,6 @@ class MainViewModel @Inject constructor(
             }
         }
 
-        // persons update coroutine
-        viewModelScope.launch {
-            ragRepository.getPersonsFlow().collect { new ->
-                _persons.update { new }
-            }
-        }
     }
 
     fun generate(prompt: String) {
@@ -49,25 +38,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updatePerson(person: Person) {
-        viewModelScope.launch {
-            ragRepository.updatePerson(person)
-        }
-    }
-
-
-    fun insertPerson(person: Person) {
-        viewModelScope.launch {
-            ragRepository.insertPerson(person)
-
-        }
-    }
-
-    fun deletePerson(person: Person) {
-        viewModelScope.launch {
-            ragRepository.deletePerson(person)
-        }
-    }
 
 
 }

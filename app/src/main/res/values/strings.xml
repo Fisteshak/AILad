@@ -6,4 +6,19 @@
     <string name="imagine_you_are">Imagine that you are…</string>
     <string name="name_can_t_be_empty">Name can\'t be empty!</string>
     <string name="edit_person">Edit person</string>
+    <string name="name_a_z">Name (A-Z)</string>
+    <string name="name_z_a">Name (Z-A)</string>
+    <string name="creation_date_oldest_first">Creation Date (Oldest First)</string>
+    <string name="change_date_oldest_first">Change Date (Oldest First)</string>
+    <string name="creation_date_newest_first">Creation Date (Newest First)</string>
+    <string name="change_date_newest_first">Change Date (Newest First)</string>
+    <string name="persons">Persons</string>
+    <string name="show_favorites">Show Favorites</string>
+    <string name="delete">Delete?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="places">Places</string>
+    <string name="imagine_you_are_at">Imagine you are at...</string>
+    <string name="add_place">Add place</string>
+    <string name="edit_place">Edit place</string>
 </resources>

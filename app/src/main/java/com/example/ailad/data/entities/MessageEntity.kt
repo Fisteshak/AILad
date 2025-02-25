@@ -3,7 +3,7 @@ package com.example.ailad.data.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.ailad.domain.entities.Message
+import com.example.ailad.entities.Message
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

@@ -3,11 +3,11 @@ package com.example.ailad.data.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.ailad.entities.Person
+import com.example.ailad.entities.Place
 import java.time.ZoneOffset
 
-@Entity(tableName = "person")
-data class PersonEntity(
+@Entity(tableName = "place")
+data class PlaceEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
@@ -18,7 +18,7 @@ data class PersonEntity(
     @ColumnInfo("is_favorite")
     val isFavorite: Boolean = false
 ) {
-    constructor(p: Person) : this(
+    constructor(p: Place) : this(
         p.id,
         p.name,
         p.creationDate.toEpochSecond(ZoneOffset.UTC),

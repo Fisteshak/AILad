@@ -4,7 +4,7 @@ import com.example.ailad.data.db.MessageDao
 import com.example.ailad.data.entities.MessageEntity
 import com.example.ailad.data.entities.MessageNetworkEntity
 import com.example.ailad.data.entities.asEntity
-import com.example.ailad.domain.entities.Message
+import com.example.ailad.entities.Message
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

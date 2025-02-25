@@ -19,53 +19,45 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ailad.R
-import com.example.ailad.entities.Person
+import com.example.ailad.entities.Place
 
 
 @Composable
-fun CreatePersonDialog(
-    showCreateDialog: Boolean,
+fun CreatePlaceDialog(
     onDismissRequest: () -> Unit,
     onAddPerson: (String) -> Unit
 ) {
-    if (showCreateDialog) {
-        NewStringDialog(
-            title = stringResource(R.string.add_person),
-            hint = stringResource(R.string.imagine_you_are),
-            stringCantBeEmptyHint = stringResource(R.string.name_can_t_be_empty),
-            onDismissRequest = onDismissRequest,
-            onAddPerson = onAddPerson
-        )
-    }
+    NewStringDialog(
+        title = stringResource(R.string.add_place),
+        hint = stringResource(R.string.imagine_you_are_at),
+        stringCantBeEmptyHint = stringResource(R.string.name_can_t_be_empty),
+        onDismissRequest = onDismissRequest,
+        onAddPerson = onAddPerson
+    )
 }
 
 
 @Composable
-fun EditPersonDialog(
-    editDialogPersonId: Int?,
+fun EditPlaceDialog(
+    editDialogPlaceId: Int?,
     onDismissRequest: () -> Unit,
     onEditPerson: (Int, String) -> Unit
 ) {
-    if (editDialogPersonId != null) {
+    if (editDialogPlaceId != null) {
         NewStringDialog(
-            title = stringResource(R.string.edit_person),
-            hint = stringResource(R.string.imagine_you_are),
+            title = stringResource(R.string.edit_place),
+            hint = stringResource(R.string.imagine_you_are_at),
             stringCantBeEmptyHint = stringResource(R.string.name_can_t_be_empty),
             onDismissRequest = onDismissRequest,
-            onAddPerson = { newName -> onEditPerson(editDialogPersonId, newName) }
+            onAddPerson = { newName -> onEditPerson(editDialogPlaceId, newName) }
         )
     }
 }
 
 
-
-
-
-
-
 @Composable
-fun PersonCard(
-    person: Person,
+fun PlaceCard(
+    place: Place,
     onFavoriteClick: () -> Unit,
     onEditClick: () -> Unit, // Callback for edit
     onDeleteClick: () -> Unit, // Callback for delete
@@ -84,7 +76,7 @@ fun PersonCard(
         ) {
 
             Text(
-                text = person.name,
+                text = place.name,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -109,7 +101,7 @@ fun PersonCard(
 
             Image( // Favorite icon (keep this)
                 painter = painterResource(
-                    id = if (person.isFavorite) R.drawable.star_filled_yellow else R.drawable.star_outlined_yellow
+                    id = if (place.isFavorite) R.drawable.star_filled_yellow else R.drawable.star_outlined_yellow
                 ),
                 contentDescription = "is favorite",
                 modifier = Modifier
@@ -119,7 +111,6 @@ fun PersonCard(
         }
     }
 }
-
 
 
 

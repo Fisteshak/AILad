@@ -3,9 +3,9 @@ package com.example.ailad.data.repositories
 import com.example.ailad.data.Error
 import com.example.ailad.data.Exception
 import com.example.ailad.data.Success
-import com.example.ailad.domain.entities.Message
-import com.example.ailad.domain.entities.Person
-import com.example.ailad.domain.entities.asMessage
+import com.example.ailad.entities.Message
+import com.example.ailad.entities.Person
+import com.example.ailad.entities.asMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
