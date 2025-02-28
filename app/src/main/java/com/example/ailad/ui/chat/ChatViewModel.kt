@@ -1,10 +1,15 @@
 package com.example.ailad.ui.chat
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ailad.data.repositories.AnswerRepository
 import com.example.ailad.data.repositories.RAGRepository
 import com.example.ailad.entities.Message
+import com.example.ailad.entities.Person
+import com.example.ailad.entities.Place
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +26,9 @@ class ChatViewModel @Inject constructor(
     private val _messages = MutableStateFlow<List<Message>>(mutableListOf())
     val messages = _messages.asStateFlow()
 
+    var chosenPerson: Person? by mutableStateOf(null)
+    var chosenPlace: Place? by mutableStateOf(null)
+
     init {
         // messages update coroutine
         viewModelScope.launch {
@@ -29,7 +37,9 @@ class ChatViewModel @Inject constructor(
             }
         }
 
+
     }
+
 
     fun generate(prompt: String) {
         viewModelScope.launch {
@@ -37,6 +47,7 @@ class ChatViewModel @Inject constructor(
             messageRepository.fetchAnswer(prompt)
         }
     }
+
 
 
 

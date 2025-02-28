@@ -27,7 +27,7 @@ import com.example.ailad.entities.Person
 import com.example.ailad.entities.Place
 import java.time.LocalDateTime
 
-private fun getSortedAndFilteredPersons(
+fun getSortedAndFilteredPersons(
     persons: List<Person>,
     sortOrder: SortOrder,
     showFavorites: Boolean
@@ -44,7 +44,7 @@ private fun getSortedAndFilteredPersons(
 }
 
 
-private fun getSortedAndFilteredPlaces(
+fun getSortedAndFilteredPlaces(
     places: List<Place>,
     sortOrder: SortOrder,
     showFavorites: Boolean

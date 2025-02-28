@@ -78,6 +78,7 @@ fun PlaceCard(
             Text(
                 text = place.name,
                 style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .weight(1f),
