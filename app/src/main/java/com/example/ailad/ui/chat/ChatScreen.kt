@@ -55,8 +55,6 @@ fun ChatScreen(modifier: Modifier = Modifier) {
     var showRAGPanel by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
-    val persons by viewModel.persons.collectAsStateWithLifecycle()
-    val places by viewModel.places.collectAsStateWithLifecycle()
 
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -85,7 +83,7 @@ fun ChatScreen(modifier: Modifier = Modifier) {
                     }
                 },
                 onSendButtonClick = {
-                    viewModel.generate(it)
+                    viewModel.generate(it, viewModel.chosenPerson, viewModel.chosenPlace)
                 },
                 onTextFieldClick = {
                     showRAGPanel = false
@@ -103,7 +101,10 @@ fun ChatScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.imePadding()
                 ) {
                     RAGPanel(
-
+                        onPersonChoose = {viewModel.chosenPerson = it},
+                        onPlaceChoose = {viewModel.chosenPlace = it},
+                        chosenPerson = viewModel.chosenPerson,
+                        chosenPlace = viewModel.chosenPlace,
                         Modifier
                     )
                 }

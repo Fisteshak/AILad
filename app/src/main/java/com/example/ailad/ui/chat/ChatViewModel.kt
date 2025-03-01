@@ -41,10 +41,24 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    fun generate(prompt: String) {
+
+
+    fun generate(prompt: String, person: Person? = null, place: Place? = null
+    ) {
+
+        var ragPrompt = ""
+        if (person != null) {
+            ragPrompt += "Imagine you are ${person.name}"
+            if (place != null) ragPrompt += " at ${place.name}. " else ragPrompt += ". "
+        } else if (place != null) {
+            ragPrompt += "Imagine you are at ${place.name}. "
+        }
+
+        ragPrompt += prompt
+
         viewModelScope.launch {
-            messageRepository.insertMessage(Message(prompt, LocalDateTime.now(), false, false))
-            messageRepository.fetchAnswer(prompt)
+            messageRepository.insertMessage(Message(ragPrompt, LocalDateTime.now(), false, false))
+            messageRepository.fetchAnswer(ragPrompt)
         }
     }
 

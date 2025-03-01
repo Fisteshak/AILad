@@ -35,18 +35,18 @@ fun SmallHeader(
             modifier = Modifier.padding(end = 10.dp).weight(1f)
         )
 
-        if (person != null) {
-            PersonCardSmall(person, onFavoriteClick = { onFavoriteClick() }, onClick = {})
-        } else {
-            PersonCardEmpty({})
-        }
-
         IconButton(
             onClick = onAddClick,
             modifier = Modifier.height(IntrinsicSize.Min)
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
         }
+        if (person != null) {
+            PersonCardSmall(person, onFavoriteClick = { onFavoriteClick() }, onClick = {})
+        } else {
+            PersonCardEmpty({})
+        }
+
     }
 }
 
@@ -68,17 +68,18 @@ fun SmallHeaderPlace(
             modifier = Modifier.padding(end = 10.dp).weight(1f)
         )
 
-        if (person != null) {
-            PlaceCardSmall(person, onFavoriteClick = { onFavoriteClick() }, onClick = {})
-        } else {
-            PersonCardEmpty({})
-        }
-
         IconButton(
             onClick = onAddClick,
             modifier = Modifier.height(IntrinsicSize.Min)
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
         }
+
+        if (person != null) {
+            PlaceCardSmall(person, onFavoriteClick = { onFavoriteClick() }, onClick = {})
+        } else {
+            PersonCardEmpty({})
+        }
+
     }
 }

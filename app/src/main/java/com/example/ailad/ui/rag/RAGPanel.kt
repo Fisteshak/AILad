@@ -12,7 +12,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -31,18 +30,21 @@ import com.example.ailad.ui.chat.SmallHeader
 import com.example.ailad.ui.chat.SmallHeaderPlace
 import java.time.LocalDateTime
 
+
 @Composable
 fun RAGPanel(
-
-    modifier: Modifier = Modifier
+    onPersonChoose: (Person?) -> Unit,
+    onPlaceChoose: (Place?) -> Unit,
+    chosenPerson: Person?,
+    chosenPlace: Place?,
+    modifier: Modifier = Modifier,
 ) {
     val viewModel: RAGViewModel = hiltViewModel()
 
     val persons by viewModel.persons.collectAsStateWithLifecycle()
     val places by viewModel.places.collectAsStateWithLifecycle()
 
-    var chosenPerson: Person? by remember { mutableStateOf(null) }
-    var chosenPlace: Place? by remember { mutableStateOf(null) }
+
     var sortOrder: SortOrder by rememberSaveable { mutableStateOf(SortOrder.ChangeDateDesc) }
     var showFavorites by rememberSaveable { mutableStateOf(false) }
 
@@ -65,12 +67,10 @@ fun RAGPanel(
             headerText = stringResource(R.string.persons),
             person = chosenPerson,
             onFavoriteClick = {
-
                 val person = chosenPerson
                 if (person != null) {
                     viewModel.updatePerson(person.copy(isFavorite = !person.isFavorite))
-                    chosenPerson = person.copy(isFavorite = !person.isFavorite)
-                    chosenPerson = person.copy(isFavorite = !person.isFavorite)
+                    onPersonChoose(person.copy(isFavorite = !person.isFavorite))
                 }
             },
             onAddClick = { showPersonCreateDialog = true },
@@ -86,15 +86,25 @@ fun RAGPanel(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier.height(140.dp)
         ) {
-            item { PersonCardEmpty({ chosenPerson = null }) }
+            item {
+                PersonCardEmpty({
+                    onPersonChoose(null)
+                })
+            }
             items(sortedFilteredPersons.size) { index ->
 
                 val item = sortedFilteredPersons[index]
                 PersonCardSmall(
                     item,
-                    onFavoriteClick = { viewModel.updatePerson(item.copy(isFavorite = !item.isFavorite)) },
+                    onFavoriteClick = {
+                        if (item.id == chosenPerson?.id) onPersonChoose(item.copy(isFavorite = !item.isFavorite))
+                        viewModel.updatePerson(item.copy(isFavorite = !item.isFavorite))
 
-                    onClick = { chosenPerson = item },
+                    },
+
+                    onClick = {
+                        onPersonChoose(item)
+                    },
                     modifier = Modifier
                 )
             }
@@ -119,15 +129,14 @@ fun RAGPanel(
         var showPlaceCreateDialog by rememberSaveable { mutableStateOf(false) }
 
         SmallHeaderPlace(
+            // Use SmallHeader for places as well
             headerText = stringResource(R.string.places),
-            person = chosenPlace,
+            person = chosenPlace, // Pass chosenPlace instead of chosenPerson
             onFavoriteClick = {
-
                 val place = chosenPlace
                 if (place != null) {
                     viewModel.updatePlace(place.copy(isFavorite = !place.isFavorite))
-                    chosenPlace = place.copy(isFavorite = !place.isFavorite)
-                    chosenPlace = place.copy(isFavorite = !place.isFavorite)
+                    onPlaceChoose(place.copy(isFavorite = !place.isFavorite))
                 }
             },
             onAddClick = { showPlaceCreateDialog = true },
@@ -143,15 +152,22 @@ fun RAGPanel(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier.height(140.dp)
         ) {
-            item { PersonCardEmpty({ chosenPlace = null }) }
+            item {
+                PersonCardEmpty({
+                    onPlaceChoose(null) // Pass null to clear selection
+                })
+            }
             items(sortedFilteredPlaces.size) { index ->
-
                 val item = sortedFilteredPlaces[index]
                 PlaceCardSmall(
                     item,
-                    onFavoriteClick = { viewModel.updatePlace(item.copy(isFavorite = !item.isFavorite)) },
-
-                    onClick = { chosenPlace = item },
+                    onFavoriteClick = {
+                        if (item.id == chosenPlace?.id) onPlaceChoose(item.copy(isFavorite = !item.isFavorite))
+                        viewModel.updatePlace(item.copy(isFavorite = !item.isFavorite))
+                    },
+                    onClick = {
+                        onPlaceChoose(item)
+                    },
                     modifier = Modifier
                 )
             }
@@ -159,13 +175,12 @@ fun RAGPanel(
         if (showPlaceCreateDialog)
             CreatePlaceDialog(
                 onDismissRequest = { showPlaceCreateDialog = false },
-                onAddPerson = { newPersonName ->
-                    val newPerson =
-                        Person(0, newPersonName, LocalDateTime.now(), LocalDateTime.now(), false)
-                    viewModel.insertPerson(newPerson)
+                onAddPerson = { newPlaceName ->
+                    val newPlace =
+                        Place(0, newPlaceName, LocalDateTime.now(), LocalDateTime.now(), false)
+                    viewModel.insertPlace(newPlace)
                     showPlaceCreateDialog = false
                 },
             )
     }
-
 }

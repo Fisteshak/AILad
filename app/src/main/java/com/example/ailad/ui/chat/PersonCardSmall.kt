@@ -120,6 +120,78 @@ fun PlaceCardSmall(
 
 
 @Composable
+fun ChosenPlaceCardSmall(
+    person: Place,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier
+            .width(170.dp)
+            .height(40.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+
+        ) {
+
+            Text(
+                text = person.name,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                modifier = Modifier
+
+                    .padding(horizontal = 16.dp)
+                    .clickable {
+                        onClick()
+                    }
+                    .weight(1f),
+            )
+
+        }
+    }
+}
+
+@Composable
+fun ChosenPersonCardSmall(
+    person: Person,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier
+            .width(170.dp)
+            .height(40.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+
+        ) {
+
+            Text(
+                text = person.name,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                modifier = Modifier
+
+                    .padding(horizontal = 16.dp)
+                    .clickable {
+                        onClick()
+                    }
+                    .weight(1f),
+            )
+
+        }
+    }
+}
+
+@Composable
 fun PersonCardEmpty(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
