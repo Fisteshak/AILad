@@ -88,16 +88,16 @@ fun PlaceCard(
                 imageVector = Icons.Filled.Edit,
                 contentDescription = "Edit",
                 modifier = Modifier
-                    .clickable { onEditClick() } // Make the image clickable
                     .padding(start = 12.dp) // Add some padding around the icon
+                    .clickable { onEditClick() } // Make the image clickable
             )
 
             Image( // Delete icon as clickable image
                 imageVector = Icons.Filled.Delete,
                 contentDescription = "Delete",
                 modifier = Modifier
-                    .clickable { onDeleteClick() } // Make the image clickable
                     .padding(horizontal = 12.dp) // Add some padding around the icon
+                    .clickable { onDeleteClick() } // Make the image clickable
             )
 
             Image( // Favorite icon (keep this)
@@ -106,8 +106,8 @@ fun PlaceCard(
                 ),
                 contentDescription = "is favorite",
                 modifier = Modifier
-                    .clickable { onFavoriteClick() }
                     .padding(end = 12.dp)
+                    .clickable { onFavoriteClick() }
             )
         }
     }

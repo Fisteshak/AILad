@@ -1,4 +1,4 @@
-package com.example.ailad.ui.rag
+package com.example.ailad.ui.chat
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,24 +23,27 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ailad.R
 import com.example.ailad.entities.Person
 import com.example.ailad.entities.Place
-import com.example.ailad.ui.chat.CommonHeader
-import com.example.ailad.ui.chat.PersonCardEmpty
-import com.example.ailad.ui.chat.PersonCardSmall
-import com.example.ailad.ui.chat.PlaceCardSmall
-import com.example.ailad.ui.chat.SmallHeader
-import com.example.ailad.ui.chat.SmallHeaderPlace
+import com.example.ailad.ui.MainViewModel
+import com.example.ailad.ui.rag.CreatePersonDialog
+import com.example.ailad.ui.rag.CreatePlaceDialog
+import com.example.ailad.ui.rag.SortOrder
+import com.example.ailad.ui.rag.getSortedAndFilteredPersons
+import com.example.ailad.ui.rag.getSortedAndFilteredPlaces
 import java.time.LocalDateTime
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RAGPanel(
     onPersonChoose: (Person?) -> Unit,
     onPlaceChoose: (Place?) -> Unit,
+    onNavigateToPrompts: () -> Unit,
     chosenPerson: Person?,
     chosenPlace: Place?,
+
     modifier: Modifier = Modifier,
 ) {
-    val viewModel: RAGViewModel = hiltViewModel()
+    val viewModel: MainViewModel = hiltViewModel()
 
     val persons by viewModel.persons.collectAsStateWithLifecycle()
     val places by viewModel.places.collectAsStateWithLifecycle()
@@ -48,10 +52,10 @@ fun RAGPanel(
     var sortOrder: SortOrder by rememberSaveable { mutableStateOf(SortOrder.ChangeDateDesc) }
     var showFavorites by rememberSaveable { mutableStateOf(false) }
 
+
     Column(
         modifier = modifier
             .fillMaxWidth()
-
     ) {
 
         CommonHeader(
@@ -59,25 +63,28 @@ fun RAGPanel(
             showFavorites = showFavorites,
             onSortClick = { sortOrder = it },
             onShowFavoritesClick = { showFavorites = !showFavorites },
+            onSwitchButtonClick = { onNavigateToPrompts() },
             modifier = Modifier.padding(top = 4.dp, bottom = 8.dp, end = 0.dp, start = 0.dp),
         )
+
+
         var showPersonCreateDialog by rememberSaveable { mutableStateOf(false) }
 
         SmallHeader(
             headerText = stringResource(R.string.persons),
             person = chosenPerson,
             onFavoriteClick = {
-                val person = chosenPerson
-                if (person != null) {
-                    viewModel.updatePerson(person.copy(isFavorite = !person.isFavorite))
-                    onPersonChoose(person.copy(isFavorite = !person.isFavorite))
+                if (chosenPerson != null) {
+                    viewModel.updatePerson(chosenPerson.copy(isFavorite = !chosenPerson.isFavorite))
+                    onPersonChoose(chosenPerson.copy(isFavorite = !chosenPerson.isFavorite))
                 }
             },
             onAddClick = { showPersonCreateDialog = true },
             modifier = Modifier.padding(bottom = 8.dp, end = 12.dp, start = 12.dp),
         )
 
-        val sortedFilteredPersons = getSortedAndFilteredPersons(persons, sortOrder, showFavorites)
+        val sortedFilteredPersons =
+            getSortedAndFilteredPersons(persons, sortOrder, showFavorites)
 
         LazyHorizontalGrid(
             rows = GridCells.Fixed(3),
@@ -182,5 +189,7 @@ fun RAGPanel(
                     showPlaceCreateDialog = false
                 },
             )
+
+
     }
 }

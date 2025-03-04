@@ -5,10 +5,13 @@ import androidx.room.RoomDatabase
 import com.example.ailad.data.entities.MessageEntity
 import com.example.ailad.data.entities.PersonEntity
 import com.example.ailad.data.entities.PlaceEntity
+import com.example.ailad.data.entities.PromptEntity
 
 @Database(
-    entities = [MessageEntity::class, PersonEntity::class, PlaceEntity::class],
+    entities = [MessageEntity::class, PersonEntity::class, PlaceEntity::class, PromptEntity::class],
     version = 1,
+
+
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {

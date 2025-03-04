@@ -16,51 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ailad.R
 import com.example.ailad.entities.Person
-
-
-@Composable
-fun CreatePersonDialog(
-    showCreateDialog: Boolean,
-    onDismissRequest: () -> Unit,
-    onAddPerson: (String) -> Unit
-) {
-    if (showCreateDialog) {
-        NewStringDialog(
-            title = stringResource(R.string.add_person),
-            hint = stringResource(R.string.imagine_you_are),
-            stringCantBeEmptyHint = stringResource(R.string.name_can_t_be_empty),
-            onDismissRequest = onDismissRequest,
-            onAddPerson = onAddPerson
-        )
-    }
-}
-
-
-@Composable
-fun EditPersonDialog(
-    editDialogPersonId: Int?,
-    onDismissRequest: () -> Unit,
-    onEditPerson: (Int, String) -> Unit
-) {
-    if (editDialogPersonId != null) {
-        NewStringDialog(
-            title = stringResource(R.string.edit_person),
-            hint = stringResource(R.string.imagine_you_are),
-            stringCantBeEmptyHint = stringResource(R.string.name_can_t_be_empty),
-            onDismissRequest = onDismissRequest,
-            onAddPerson = { newName -> onEditPerson(editDialogPersonId, newName) }
-        )
-    }
-}
-
-
-
-
-
 
 
 @Composable
@@ -96,16 +54,16 @@ fun PersonCard(
                 imageVector = Icons.Filled.Edit,
                 contentDescription = "Edit",
                 modifier = Modifier
-                    .clickable { onEditClick() } // Make the image clickable
                     .padding(start = 12.dp) // Add some padding around the icon
+                    .clickable { onEditClick() } // Make the image clickable
             )
 
             Image( // Delete icon as clickable image
                 imageVector = Icons.Filled.Delete,
                 contentDescription = "Delete",
                 modifier = Modifier
-                    .clickable { onDeleteClick() } // Make the image clickable
                     .padding(horizontal = 12.dp) // Add some padding around the icon
+                    .clickable { onDeleteClick() } // Make the image clickable
             )
 
             Image( // Favorite icon (keep this)
@@ -114,8 +72,8 @@ fun PersonCard(
                 ),
                 contentDescription = "is favorite",
                 modifier = Modifier
-                    .clickable { onFavoriteClick() }
                     .padding(end = 12.dp)
+                    .clickable { onFavoriteClick() }
             )
         }
     }

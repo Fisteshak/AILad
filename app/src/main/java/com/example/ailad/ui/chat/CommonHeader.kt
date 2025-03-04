@@ -30,6 +30,7 @@ fun CommonHeader(
     headerText: String,
     showFavorites: Boolean,
     onShowFavoritesClick: () -> Unit, // Callback for showing favorites
+    onSwitchButtonClick: () -> Unit,
     onSortClick: (SortOrder) -> Unit, // Callback for sorting, takes SortOrder
     modifier: Modifier = Modifier,
 ) {
@@ -39,10 +40,20 @@ fun CommonHeader(
         modifier.wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically
     ) {
+
+        IconButton(onClick = onSwitchButtonClick, modifier = Modifier.padding(horizontal = 12.dp)) {
+            Icon(
+                painter = painterResource(R.drawable.switch_icon),
+                contentDescription = stringResource(R.string.switch_r),
+            )
+        }
+
+
+
         Text(
             headerText,
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(horizontal = 12.dp)
+
         )
         Spacer(Modifier.weight(1f))
 

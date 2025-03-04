@@ -1,5 +1,5 @@
 package com.example.ailad.data.entities
 
-data class Prompt(
+data class RequestDTO(
     val prompt: String
 )

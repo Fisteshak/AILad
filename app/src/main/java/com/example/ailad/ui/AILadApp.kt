@@ -10,14 +10,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ailad.ui.chat.ChatScreen
 import com.example.ailad.ui.rag.RAGScreen
@@ -26,7 +27,8 @@ import com.example.ailad.ui.settings.SettingsScreen
 @Composable
 fun AILadApp() {
     val navController = rememberNavController()
-    var selectedItem by remember { mutableIntStateOf(0) }
+
+    val viewModel: MainViewModel = hiltViewModel()
 
     val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
         "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
@@ -35,6 +37,8 @@ fun AILadApp() {
         bottomBar = {
 
             NavigationBar {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
                 topLevelRoutes.forEachIndexed { index, topLevelRoute ->
                     NavigationBarItem(
                         icon = {
@@ -44,9 +48,13 @@ fun AILadApp() {
                             )
                         },
                         label = { Text(topLevelRoute.name) },
-                        selected = selectedItem == index,
+                        selected = let {
+                            currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true
+
+                        }
+
+                        ,
                         onClick = {
-                            selectedItem = index
                             navController.navigate(topLevelRoute.route) {
                                 // Pop up to the start destination of the graph to
                                 // avoid building up a large stack of destinations
@@ -68,23 +76,53 @@ fun AILadApp() {
     ) { innerPadding ->
         NavHost(
             navController,
-            startDestination = Chat,
+            startDestination = Chat(),
             Modifier
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
         ) {
-            composable<Chat> {
+            composable<Chat> { navBackStackEntry ->
                 CompositionLocalProvider(
                     LocalViewModelStoreOwner provides viewModelStoreOwner
                 ) {
-                    ChatScreen()
+                    ChatScreen(
+                        onNavigateToPrompts = {
+                            viewModel.selectedTab.intValue = 2
+                            navController.navigate(route = RAG) {
+                                launchSingleTop = true
+                                popUpTo(Chat()) {
+                                    saveState = true
+                                    inclusive = true
+                                }
+                            }
+                        }
+                    )
                 }
             }
-            composable<RAG> {
+
+            composable<RAG> { navBackStack ->
                 CompositionLocalProvider(
                     LocalViewModelStoreOwner provides viewModelStoreOwner
                 ) {
-                    RAGScreen()
+                    RAGScreen(
+                        onNavigateToChat = { id, shouldRun ->
+                            if (shouldRun) {
+                                viewModel.updateSearchBarText("")
+                                viewModel.generate(id)
+
+                            } else {
+                                viewModel.loadPromptToSearchBar(id)
+                            }
+                            navController.navigate(route = Chat()) {
+                                launchSingleTop = true
+                                popUpTo(RAG) {
+                                    saveState = true
+                                    inclusive = true
+                                }
+                            }
+                        },
+
+                        )
                 }
             }
             composable<Settings> {

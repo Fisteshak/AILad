@@ -1,5 +1,6 @@
 package com.example.ailad.data.repositories
 
+import android.util.Log
 import com.example.ailad.data.Error
 import com.example.ailad.data.Exception
 import com.example.ailad.data.Success
@@ -16,6 +17,7 @@ class AnswerRepository @Inject constructor(
     private val localRepository: AnswerLocalRepository
 ) {
     suspend fun fetchAnswer(prompt: String): Long {
+        Log.d("AnswerRepository", "fetchingAnswer: $prompt ")
         when (val response = networkRepository.fetchAnswer(prompt)) {
             is Error -> return -1
             is Exception -> return -1

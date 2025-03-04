@@ -22,4 +22,10 @@
     <string name="add_place">Add place</string>
     <string name="edit_place">Edit place</string>
     <string name="templates">Templates</string>
+    <string name="prompt">Prompt:</string>
+    <string name="create_prompt">Create prompt</string>
+    <string name="prompt_can_t_be_empty">Prompt can\'t be empty</string>
+    <string name="edit_prompt">Edit prompt</string>
+    <string name="switch_r">switch</string>
+    <string name="prompts">Prompts</string>
 </resources>

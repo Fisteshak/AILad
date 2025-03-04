@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.example.ailad.data.entities.PersonEntity
 import com.example.ailad.data.entities.PlaceEntity
+import com.example.ailad.data.entities.PromptEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -36,4 +37,18 @@ interface RAGDao {
 
     @Delete
     suspend fun deletePlace(place: PlaceEntity)
+
+
+    @Query("SELECT * FROM prompt") // Changed to prompt table
+    fun getPromptsFlow(): Flow<List<PromptEntity>> // Changed to PromptEntity
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updatePrompt(prompt: PromptEntity) // Changed to PromptEntity
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPrompt(prompt: PromptEntity) // Changed to PromptEntity
+
+    @Delete
+    suspend fun deletePrompt(prompt: PromptEntity) // Changed to PromptEntity
+
 }

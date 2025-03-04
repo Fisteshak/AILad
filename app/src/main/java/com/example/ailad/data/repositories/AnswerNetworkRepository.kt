@@ -7,7 +7,7 @@ import com.example.ailad.data.NetworkResponse
 import com.example.ailad.data.Success
 import com.example.ailad.data.api.RTULabApi
 import com.example.ailad.data.entities.MessageNetworkEntity
-import com.example.ailad.data.entities.Prompt
+import com.example.ailad.data.entities.RequestDTO
 import java.io.IOException
 import javax.inject.Inject
 
@@ -18,7 +18,7 @@ class AnswerNetworkRepository @Inject constructor(
         return try {
             Log.d("AnswerNetworkRepository", "generating message with prompt: $prompt")
 
-            val response = api.generateAnswer(Prompt(prompt))
+            val response = api.generateAnswer(RequestDTO(prompt))
             if (response.code() == 200) {
                 Log.d("AnswerNetworkRepository", "response body: ${response.body().toString()}")
 

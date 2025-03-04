@@ -2,9 +2,7 @@ package com.example.ailad.ui.rag
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,12 +16,10 @@ fun <T>PersonsGrid(
 ) {
 
 
-    LazyHorizontalGrid(
-        rows = GridCells.Fixed(rows),
+    LazyColumn(
         contentPadding = PaddingValues(horizontal = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier.height(140.dp)
+        modifier = modifier
     ) {
         items(persons.size) { index ->
             cellContent(persons[index])

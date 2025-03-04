@@ -5,11 +5,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,21 +43,25 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ailad.entities.Message
-import com.example.ailad.ui.rag.RAGPanel
+import com.example.ailad.ui.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import kotlin.time.Duration.Companion.milliseconds
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun ChatScreen(modifier: Modifier = Modifier) {
-    val viewModel: ChatViewModel = hiltViewModel()
+fun ChatScreen(
+    onNavigateToPrompts: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val viewModel: MainViewModel = hiltViewModel()
     val messages by viewModel.messages.collectAsStateWithLifecycle()
     var showRAGPanel by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
+    val searchBarText by viewModel.searchBarText
 
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -74,15 +81,22 @@ fun ChatScreen(modifier: Modifier = Modifier) {
                 }
             }
 
+            val keyboardVisible = WindowInsets.isImeVisible
             SearchBar(
+                searchText = searchBarText,
+                onSearchTextChange = { viewModel.updateSearchBarText(it) },
                 onSwitchButtonClick = {
                     scope.launch {
-                        keyboardController?.hide()
-                        delay(80.milliseconds)
+                        if (keyboardVisible) {
+                            keyboardController?.hide()
+                            delay(80.milliseconds)
+                        }
+
                         showRAGPanel = true
                     }
                 },
                 onSendButtonClick = {
+                    viewModel.updateSearchBarText("")
                     viewModel.generate(it, viewModel.chosenPerson, viewModel.chosenPlace)
                 },
                 onTextFieldClick = {
@@ -101,8 +115,18 @@ fun ChatScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.imePadding()
                 ) {
                     RAGPanel(
-                        onPersonChoose = {viewModel.chosenPerson = it},
-                        onPlaceChoose = {viewModel.chosenPlace = it},
+                        onPersonChoose = { viewModel.chosenPerson = it },
+                        onPlaceChoose = { viewModel.chosenPlace = it },
+                        onNavigateToPrompts = {
+
+                            scope.launch {
+                                bottomSheetState.hide()
+                                showRAGPanel = false
+                            }
+                            onNavigateToPrompts()
+
+
+                        },
                         chosenPerson = viewModel.chosenPerson,
                         chosenPlace = viewModel.chosenPlace,
                         Modifier
@@ -117,18 +141,19 @@ fun ChatScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun SearchBar(
+    searchText: String,
+    onSearchTextChange: (String) -> Unit,
     onTextFieldClick: () -> Unit,
     onSendButtonClick: (String) -> Unit,
     onSwitchButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var searchText by rememberSaveable { mutableStateOf("") }
 
     Column(modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(vertical = 16.dp, horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -140,7 +165,7 @@ fun SearchBar(
             BasicTextField(
 
                 value = searchText,
-                onValueChange = { searchText = it },
+                onValueChange = { onSearchTextChange(it) },
                 modifier = Modifier
                     .weight(1f)
                     .padding(8.dp)
@@ -149,7 +174,7 @@ fun SearchBar(
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(8.dp),
-                singleLine = true,
+                singleLine = false,
                 interactionSource = remember { MutableInteractionSource() }
                     .also { interactionSource ->
                         LaunchedEffect(interactionSource) {
