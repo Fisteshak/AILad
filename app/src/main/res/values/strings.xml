@@ -41,4 +41,6 @@
     <string name="en" translatable="false">English</string>
     <string name="ru" translatable="false">Русский</string>
     <string name="locale">en</string>
+    <string name="search">Search...</string>
+    <string name="select_date_range">Select date range</string>
 </resources>

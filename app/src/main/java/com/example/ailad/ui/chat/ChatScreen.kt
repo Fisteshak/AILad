@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +35,7 @@ import com.example.ailad.R
 import com.example.ailad.ui.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.ZoneOffset
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -71,15 +73,32 @@ fun ChatScreen(
             LaunchedEffect(key1 = messages) {
                 lazyColumnState.animateScrollToItem(0)
             }
-//
-//            if (keyboardIsOpening() && !lazyColumnState.canScrollForward) {
-//                LaunchedEffect(key1 = WindowInsets.ime.getBottom(LocalDensity.current)) {
-//                    lazyColumnState.scrollToItem((messages.size - 1).coerceAtLeast(0), 100)
-//                }
-//            }
 
+            var searchText by rememberSaveable { mutableStateOf("") }
+            var textFieldVisible by rememberSaveable { mutableStateOf(false) }
+            val dateRangePickerState = rememberDateRangePickerState()
+            SearchBar(
+                text = searchText,
+                onTextChange = { searchText = it },
+                textFieldVisible = textFieldVisible,
+                onTextFieldVisibleChange = { textFieldVisible = it; searchText = "" },
+                datePickerState = dateRangePickerState,
+                onDatePickerStateChange = { }
 
-            val groupedMessages = messages.reversed().groupBy { it.date.toLocalDate() }
+            )
+            val groupedMessages = messages
+                .reversed()
+                .filter { it.text.contains(searchText.trim()) }
+                .filter {
+                    it.date.minusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000 <=
+                     (dateRangePickerState.selectedEndDateMillis ?: Long.MAX_VALUE)
+                            &&
+                     (dateRangePickerState.selectedStartDateMillis ?: Long.MIN_VALUE) <=
+                    it.date.toEpochSecond(ZoneOffset.UTC) * 1000
+                            || !textFieldVisible
+
+                }
+                .groupBy { it.date.toLocalDate() }
             LazyColumn(
                 state = lazyColumnState,
                 modifier = Modifier
@@ -96,16 +115,16 @@ fun ChatScreen(
                 }
             }
 
-//            Row {
-//                Text(lazyColumnState.layoutInfo.viewportStartOffset.toString() + "     ")
-//                // Text(lazyColumnState.layoutInfo.visibleItemsInfo[0].())
-//            }
 
             val keyboardVisible = WindowInsets.isImeVisible
             val locale = stringResource(R.string.locale)
-            SearchBar(
+            MessageBar(
                 searchText = searchBarText,
-                onSearchTextChange = { viewModel.updateSearchBarText(it) },
+                onSearchTextChange = {
+                    viewModel.updateSearchBarText(it)
+                    textFieldVisible = false
+                    searchText = ""
+                },
                 onSwitchButtonClick = {
                     scope.launch {
                         if (keyboardVisible) {

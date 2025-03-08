@@ -38,4 +38,6 @@
     <string name="selected_language">Язык:</string>
     <string name="language">Русский</string>
     <string name="locale">ru</string>
+    <string name="search">Поиск...</string>
+    <string name="select_date_range">Выберите даты</string>
 </resources>
