@@ -31,14 +31,22 @@ class AnswerNetworkRepository @Inject constructor(
                     Error(1)
                 }
             } else {
-                Log.d("AnswerNetworkRepository", "got response with code: ${response.code()}; message: ${response.message()}")
+                Log.d(
+                    "AnswerNetworkRepository",
+                    "got response with code: ${response.code()}; message: ${response.message()}"
+                )
                 Error(response.code())
 
             }
+
         } catch (e: IOException) {
-            Log.d("AnswerNetworkRepository", "got exception: ${e.message}")
+            Log.d("AnswerNetworkRepository", "got exception: $e")
 
             Exception(e)
         }
     }
 }
+
+//} catch (e: SocketTimeoutException) {
+//    Exception(e)
+//} catch (e: ConnectException) {

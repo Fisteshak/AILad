@@ -1,6 +1,5 @@
 package com.example.ailad.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ailad.data.repositories.AnswerRepository
 import com.example.ailad.data.repositories.RAGRepository
 import com.example.ailad.entities.Message
+import com.example.ailad.entities.MessageStatus
 import com.example.ailad.entities.Person
 import com.example.ailad.entities.Place
 import com.example.ailad.entities.Prompt
@@ -49,7 +49,6 @@ class MainViewModel @Inject constructor(
 
     init {
 
-        Log.d("MainViewModel", "creating ")
         // persons update coroutine
         viewModelScope.launch {
             ragRepository.getPersonsFlow().collect { new ->
@@ -73,9 +72,16 @@ class MainViewModel @Inject constructor(
 
         // messages update coroutine
         viewModelScope.launch {
+            // delete all uncompleted messages
+            messageRepository.deleteWaitingForResponseMessages()
+
             messageRepository.getMessagesFlow().collect { new ->
                 _messages.update { new }
             }
+
+        }
+
+        viewModelScope.launch {
         }
 
     }
@@ -134,30 +140,73 @@ class MainViewModel @Inject constructor(
         }
     }
 
-
-    fun generate(prompt: String, person: Person? = null, place: Place? = null
+    // Helper class for locale-specific templates
+    data class LocaleTemplates(
+        val personIntro: String,
+        val placeWithPerson: String,
+        val placeOnly: String
+    )
+    fun generate(
+        locale: String, prompt: String, person: Person? = null, place: Place? = null
     ) {
 
+
+        val templates = mapOf(
+            "ru" to LocaleTemplates(
+                personIntro = "Представь, что ты %s",
+                placeWithPerson = " в %s. ",
+                placeOnly = "Представь, что ты находишься в %s. "
+            ),
+            "en" to LocaleTemplates(
+                personIntro = "Imagine you are %s",
+                placeWithPerson = " at %s. ",
+                placeOnly = "Imagine you are at %s. "
+            )
+        )
+
+        val t = templates[locale] ?: templates["en"]!!
+
         var ragPrompt = ""
+
         if (person != null) {
-            ragPrompt += "Imagine you are ${person.name}"
-            if (place != null) ragPrompt += " at ${place.name}. " else ragPrompt += ". "
+            ragPrompt += t.personIntro.format(person.name)
+            if (place != null) {
+                ragPrompt += t.placeWithPerson.format(place.name)
+            } else {
+                ragPrompt += ". "
+            }
         } else if (place != null) {
-            ragPrompt += "Imagine you are at ${place.name}. "
+            ragPrompt += t.placeOnly.format(place.name)
         }
 
         ragPrompt += prompt
 
         viewModelScope.launch {
-            messageRepository.insertMessage(Message(ragPrompt, LocalDateTime.now(), false, false))
-            messageRepository.fetchAnswer(ragPrompt)
+            messageRepository.insertMessage(
+                Message(ragPrompt, LocalDateTime.now(), false, false)
+            )
+
+            val waitingMessageId: Long = messageRepository.insertMessage(
+                Message(
+                    text = "",
+                    date = LocalDateTime.now(),
+                    isFavorite = false,
+                    isResponse = true,
+                    status = MessageStatus.WaitingForResponse
+                )
+            )
+
+            val answer = messageRepository.fetchAnswer(ragPrompt)
+            messageRepository.updateMessage(answer.copy(id = waitingMessageId.toInt()))
+
+
         }
     }
 
-    fun generate(promptId: Int) {
+    fun generate(locale: String, promptId: Int) {
         val prompt = prompts.value.find { it.id == promptId }
         if (prompt != null)
-            generate(prompt.name, chosenPerson, chosenPlace)
+            generate(locale, prompt.name, chosenPerson, chosenPlace)
     }
 
     fun loadPromptToSearchBar(promptId: Int) {
@@ -169,4 +218,4 @@ class MainViewModel @Inject constructor(
     fun updateSearchBarText(text: String) {
         searchBarText.value = text
     }
- }
+}

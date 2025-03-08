@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">Ок</string>
+    <string name="cancel">Отмена</string>
+    <string name="add_person">Добавить личность</string>
+    <string name="imagine_you_are">Представь что ты...</string>
+    <string name="name_can_t_be_empty">Имя не может быть пустым!</string>
+    <string name="edit_person">Редактировать личность</string>
+    <string name="name_a_z">Имя (А-Я)</string>
+    <string name="name_z_a">Имя (Я-А)</string>
+    <string name="creation_date_oldest_first">Дата создания (сначала старые)</string>
+    <string name="change_date_oldest_first">Дата изменения (сначала старые)</string>
+    <string name="creation_date_newest_first">Дата создания (сначала новые)</string>
+    <string name="change_date_newest_first">Дата изменения (сначала новые)</string>
+    <string name="persons">Личности</string>
+    <string name="show_favorites">Показать избранные</string>
+    <string name="delete">Удалить?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="places">Места</string>
+    <string name="imagine_you_are_at">Представь что ты в...</string>
+    <string name="add_place">Добавить место</string>
+    <string name="edit_place">Редактировать место</string>
+    <string name="templates">Шаблоны</string>
+    <string name="prompt">Запрос:</string>
+    <string name="create_prompt">Создать запрос</string>
+    <string name="prompt_can_t_be_empty">Запрос не может быть пустым</string>
+    <string name="edit_prompt">Редактировать запрос</string>
+    <string name="switch_r">сменить</string>
+    <string name="prompts">Запросы</string>
+    <string name="prompts_capital">Запросы</string>
+    <string name="chat_bottom_navbar">Чат</string>
+    <string name="settings_bottom_navbar">Настройки</string>
+    <string name="wait">Подождите...</string>
+    <string name="error_description">Ошибка</string>
+    <string name="connection_error_description">Произошла ошибка соединения. Проверьте свое интернет-соединение.</string>
+    <string name="timeout_error_description">Произошла ошибка таймаута. Повторите попытку позже.</string>
+    <string name="selected_language">Язык:</string>
+    <string name="language">Русский</string>
+    <string name="locale">ru</string>
+</resources>

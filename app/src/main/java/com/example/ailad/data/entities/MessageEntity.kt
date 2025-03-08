@@ -17,24 +17,28 @@ data class MessageEntity(
     val isResponse: Boolean,
     @ColumnInfo("is_favorite")
     val isFavorite: Boolean,
+    @ColumnInfo(defaultValue = "0")
+    val status: Int
 )
 
-fun MessageNetworkEntity.asEntity(): MessageEntity {
+fun MessageNetworkEntity.asEntity(status: Int): MessageEntity {
     return MessageEntity(
         0,
         text,
         LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
         true,
-        false
+        false,
+        status
     )
 }
 
 fun Message.asEntity(): MessageEntity {
     return MessageEntity(
-        0,
+        id,
         text,
         date.toEpochSecond(ZoneOffset.UTC),
         isResponse,
-        isFavorite
+        isFavorite,
+        status.id
     )
 }

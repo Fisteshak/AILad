@@ -39,12 +39,14 @@ fun CreatePlaceDialog(
 
 @Composable
 fun EditPlaceDialog(
+    initialText: String,
     editDialogPlaceId: Int?,
     onDismissRequest: () -> Unit,
     onEditPerson: (Int, String) -> Unit
 ) {
     if (editDialogPlaceId != null) {
         NewStringDialog(
+            text = initialText,
             title = stringResource(R.string.edit_place),
             hint = stringResource(R.string.imagine_you_are_at),
             stringCantBeEmptyHint = stringResource(R.string.name_can_t_be_empty),

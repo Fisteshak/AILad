@@ -65,7 +65,7 @@ fun PromptCard(
                     ),
                     contentDescription = "Run Prompt",
                     modifier = Modifier
-                        .padding(start = 6.dp)
+                        .padding(start = 0.dp)
                         .clickable { onRunClick(prompt.id) }
                 )
                 Image(
@@ -102,7 +102,7 @@ fun PromptCard(
                     ),
                     contentDescription = "is favorite",
                     modifier = Modifier
-                        .padding(end = 12.dp)
+                        .padding(end = 4.dp)
                         .clickable { onFavoriteClick() }
                 )
             }

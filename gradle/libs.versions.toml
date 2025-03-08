@@ -12,6 +12,7 @@ navVersion = "2.8.6"
 kotlinxSerializationJson = "1.6.3"
 hiltAndroid = "2.51.1"
 material3 = "1.4.0-alpha08"
+appcompat = "1.7.0"
 
 
 
@@ -37,6 +38,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

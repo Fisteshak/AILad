@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "623089750493",
+    "project_id": "ailad-f0430",
+    "storage_bucket": "ailad-f0430.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:623089750493:android:f71078da58700080e16634",
+        "android_client_info": {
+          "package_name": "com.example.ailad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_Qc_lj-52OUsV2av7lhGSPUJdq0RpJ4s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

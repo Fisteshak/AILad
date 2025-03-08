@@ -10,14 +10,16 @@ data class Message(
     val date: LocalDateTime,
     val isFavorite: Boolean,
     val isResponse: Boolean,
+    val status: MessageStatus = MessageStatus.Success,
+    val id: Int = 0
 ) {
-    constructor(m: MessageNetworkEntity, isResponse: Boolean) : this(
+    constructor(m: MessageNetworkEntity, isResponse: Boolean = true, status: MessageStatus) : this(
         m.text,
         LocalDateTime.now(),
         false,
-        isResponse
+        isResponse,
+        status
     )
-
 
 }
 
@@ -26,6 +28,7 @@ fun MessageEntity.asMessage(): Message {
         text,
         LocalDateTime.ofEpochSecond(date, 0, ZoneOffset.UTC),
         isFavorite,
-        isResponse
+        isResponse,
+        MessageStatus.entries.first { it.id == status }
     )
 }

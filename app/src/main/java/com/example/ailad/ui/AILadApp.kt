@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -20,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.ailad.R
 import com.example.ailad.ui.chat.ChatScreen
 import com.example.ailad.ui.rag.RAGScreen
 import com.example.ailad.ui.settings.SettingsScreen
@@ -44,10 +46,10 @@ fun AILadApp() {
                         icon = {
                             Icon(
                                 topLevelRoute.icon,
-                                contentDescription = topLevelRoute.name
+                                contentDescription = stringResource(topLevelRoute.nameId)
                             )
                         },
-                        label = { Text(topLevelRoute.name) },
+                        label = { Text(stringResource(topLevelRoute.nameId)) },
                         selected = let {
                             currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true
 
@@ -104,11 +106,13 @@ fun AILadApp() {
                 CompositionLocalProvider(
                     LocalViewModelStoreOwner provides viewModelStoreOwner
                 ) {
+                    val locale = stringResource(R.string.locale)
+
                     RAGScreen(
                         onNavigateToChat = { id, shouldRun ->
                             if (shouldRun) {
                                 viewModel.updateSearchBarText("")
-                                viewModel.generate(id)
+                                viewModel.generate(locale, id)
 
                             } else {
                                 viewModel.loadPromptToSearchBar(id)

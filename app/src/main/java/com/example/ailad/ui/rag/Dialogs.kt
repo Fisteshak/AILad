@@ -24,12 +24,14 @@ fun CreatePersonDialog(
 
 @Composable
 fun EditPersonDialog(
+    initialText: String,
     editDialogPersonId: Int?,
     onDismissRequest: () -> Unit,
     onEditPerson: (Int, String) -> Unit
 ) {
     if (editDialogPersonId != null) {
         NewStringDialog(
+            text = initialText,
             title = stringResource(R.string.edit_person),
             hint = stringResource(R.string.imagine_you_are),
             stringCantBeEmptyHint = stringResource(R.string.name_can_t_be_empty),

@@ -100,7 +100,11 @@ fun RAGScreen(
 
 
         var selectedIndex = viewModel.selectedTab.intValue
-        val options = listOf(stringResource(R.string.persons), stringResource(R.string.places), stringResource(R.string.prompts))
+        val options = listOf(
+            stringResource(R.string.persons),
+            stringResource(R.string.places),
+            stringResource(R.string.prompts)
+        )
 
         SingleChoiceSegmentedButtonRow(
             Modifier
@@ -178,16 +182,23 @@ fun RAGScreen(
                     },
                 )
 
-                EditPersonDialog(
-                    editDialogPersonId = editDialogPersonId,
-                    onDismissRequest = { editDialogPersonId = null },
-                    onEditPerson = { id, newPersonName ->
-                        val updatedPerson = persons.find { it.id == id }!!
-                            .copy(name = newPersonName, changeDate = LocalDateTime.now())
-                        viewModel.updatePerson(updatedPerson)
-                        editDialogPersonId = null
-                    }
-                )
+                // these dialogs are bad code but i don't have time to fix it
+                // it works though
+                if (editDialogPersonId != null) {
+                    val initialText = persons.find { it.id == editDialogPersonId }!!.name
+
+                    EditPersonDialog(
+                        initialText = initialText,
+                        editDialogPersonId = editDialogPersonId,
+                        onDismissRequest = { editDialogPersonId = null },
+                        onEditPerson = { id, newPersonName ->
+                            val updatedPerson = persons.find { it.id == id }!!
+                                .copy(name = newPersonName, changeDate = LocalDateTime.now())
+                            viewModel.updatePerson(updatedPerson)
+                            editDialogPersonId = null
+                        }
+                    )
+                }
 
                 DeleteDialog(
                     deleteDialogItemId = deleteDialogPersonId,
@@ -261,17 +272,21 @@ fun RAGScreen(
                         },
                     )
                 }
+                if (editDialogPlaceId != null) {
+                    val initialText = places.find{ it.id == editDialogPlaceId}!!.name
 
-                EditPlaceDialog(
-                    editDialogPlaceId = editDialogPlaceId,
-                    onDismissRequest = { editDialogPlaceId = null },
-                    onEditPerson = { id, newPlaceName ->
-                        val updatedPlace = places.find { it.id == id }!!
-                            .copy(name = newPlaceName, changeDate = LocalDateTime.now())
-                        viewModel.updatePlace(updatedPlace)
-                        editDialogPlaceId = null
-                    }
-                )
+                    EditPlaceDialog(
+                        initialText = initialText,
+                        editDialogPlaceId = editDialogPlaceId,
+                        onDismissRequest = { editDialogPlaceId = null },
+                        onEditPerson = { id, newPlaceName ->
+                            val updatedPlace = places.find { it.id == id }!!
+                                .copy(name = newPlaceName, changeDate = LocalDateTime.now())
+                            viewModel.updatePlace(updatedPlace)
+                            editDialogPlaceId = null
+                        }
+                    )
+                }
 
                 DeleteDialog(
                     deleteDialogItemId = deleteDialogPlaceId,
@@ -294,7 +309,7 @@ fun RAGScreen(
                 var promptsShowFavorites by rememberSaveable { mutableStateOf(false) }
 
                 PersonsHeader(
-                    headerText = "Prompts",
+                    headerText = stringResource(R.string.prompts_capital),
                     showFavorites = promptsShowFavorites,
                     onAddClick = { showPromptCreateDialog = true },
                     onSortClick = { promptsSortOrder = it },

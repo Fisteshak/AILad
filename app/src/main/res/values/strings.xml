@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AILad</string>
+    <string name="app_name" translatable="false">AILad</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
     <string name="add_person">Add person</string>
@@ -28,4 +28,17 @@
     <string name="edit_prompt">Edit prompt</string>
     <string name="switch_r">switch</string>
     <string name="prompts">Prompts</string>
+    <string name="prompts_capital">Prompts</string>
+    <string name="chat_bottom_navbar">Chat</string>
+    <string name="RAG_bottom_navbar" translatable="false">RAG</string>
+    <string name="settings_bottom_navbar">Settings</string>
+    <string name="wait">Wait...</string>
+    <string name="error_description">Error</string>
+    <string name="connection_error_description">Connection error has happened. Check your internet connection.</string>
+    <string name="timeout_error_description">Timeout error has happened. Try again later.</string>
+    <string name="selected_language">Language:</string>
+    <string name="language">English</string>
+    <string name="en" translatable="false">English</string>
+    <string name="ru" translatable="false">Русский</string>
+    <string name="locale">en</string>
 </resources>

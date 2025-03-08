@@ -4,11 +4,15 @@ import android.util.Log
 import com.example.ailad.data.Error
 import com.example.ailad.data.Exception
 import com.example.ailad.data.Success
+import com.example.ailad.data.entities.asEntity
 import com.example.ailad.entities.Message
+import com.example.ailad.entities.MessageStatus
 import com.example.ailad.entities.Person
 import com.example.ailad.entities.asMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -16,19 +20,73 @@ class AnswerRepository @Inject constructor(
     private val networkRepository: AnswerNetworkRepository,
     private val localRepository: AnswerLocalRepository
 ) {
-    suspend fun fetchAnswer(prompt: String): Long {
+    suspend fun fetchAnswer(prompt: String): Message {
         Log.d("AnswerRepository", "fetchingAnswer: $prompt ")
         when (val response = networkRepository.fetchAnswer(prompt)) {
-            is Error -> return -1
-            is Exception -> return -1
-            is Success -> {
-                return localRepository.insertMessage(response.data)
+            is Error -> return Message(
+                "Error!",
+                LocalDateTime.now(),
+                false,
+                true,
+                MessageStatus.Error
+            )
+
+            is Exception -> {
+                return (when (response.e) {
+                    is ConnectException -> {
+                        Message(
+                            "Connect Exception!",
+                            LocalDateTime.now(),
+                            false,
+                            true,
+                            MessageStatus.ConnectionError
+                        )
+                    }
+
+                    is SocketTimeoutException -> {
+                        Message(
+                            "Socket Timeout Exception!",
+                            LocalDateTime.now(),
+                            false,
+                            true,
+                            MessageStatus.TimeoutError
+                        )
+                    }
+
+                    else -> {
+                        Message(
+                            "Network Exception!",
+                            LocalDateTime.now(),
+                            false,
+                            true,
+                            MessageStatus.Error
+                        )
+
+                    }
+                })
             }
+
+            is Success -> {
+                return Message(response.data, status = MessageStatus.Success)
+            }
+
+
         }
     }
 
-    suspend fun insertMessage(message: Message) {
-        localRepository.insertMessage(message)
+    suspend fun insertMessage(message: Message): Long {
+        return localRepository.insertMessage(message.asEntity())
+    }
+    suspend fun updateMessage(message: Message): Long {
+        return localRepository.updateMessage(message.asEntity())
+    }
+
+    suspend fun deleteMessageById(id: Int) {
+        localRepository.deleteMessageById(id)
+    }
+
+    suspend fun deleteWaitingForResponseMessages() {
+        return localRepository.deleteWaitingForResponseMessages()
     }
 
     suspend fun getMessagesFlow(): Flow<List<Message>> {

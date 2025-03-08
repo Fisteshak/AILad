@@ -7,6 +7,8 @@ plugins {
     id("com.google.devtools.ksp")
     // hilt
     id("com.google.dagger.hilt.android")
+    // google services for firebase
+    id("com.google.gms.google-services")
 
 }
 
@@ -34,6 +36,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -54,6 +57,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    androidResources {
+        generateLocaleConfig = true
+    }
 }
 
 dependencies {
@@ -66,6 +72,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -99,8 +106,10 @@ dependencies {
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     // integration of hilt with navigation
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-
-
+    // firebase base
+    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    // datastore
+    implementation("androidx.datastore:datastore-preferences:1.1.3")
 
 }
 
