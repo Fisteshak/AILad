@@ -103,9 +103,16 @@ fun SearchBar(
                 }
                 val coroutineScope = rememberCoroutineScope()
                 if (textFieldVisible) {
-                    IconButton(onClick = {
-                        showDatePickerDialog = true
-                    }) {
+                    val isRangeSelected = datePickerState.selectedStartDateMillis != null &&
+                            datePickerState.selectedEndDateMillis != null
+
+                    IconButton(
+                        onClick = { showDatePickerDialog = true },
+                        colors = androidx.compose.material3.IconButtonDefaults.iconButtonColors(
+                            containerColor = if (isRangeSelected) Color.Green else Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    ) {
                         Icon(
                             imageVector = Icons.Default.DateRange,
                             contentDescription = "Pick Date",
@@ -137,8 +144,7 @@ fun SearchBar(
                 DatePickerDialog(
                     onDismissRequest = {
                         showDatePickerDialog = false
-                        onDatePickerStateChange()
-                                       },
+                    },
                     confirmButton = {
                         TextButton(onClick = {
                             showDatePickerDialog = false
@@ -148,7 +154,10 @@ fun SearchBar(
                         }
                     },
                     dismissButton = {
-                        TextButton(onClick = { showDatePickerDialog = false }) {
+
+                        TextButton(onClick = {
+                            showDatePickerDialog = false; onDatePickerStateChange()
+                        }) {
                             Text(stringResource(R.string.cancel))
                         }
                     }

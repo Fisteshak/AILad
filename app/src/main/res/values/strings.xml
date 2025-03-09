@@ -43,4 +43,6 @@
     <string name="locale">en</string>
     <string name="search">Search...</string>
     <string name="select_date_range">Select date range</string>
+    <string name="save">Save</string>
+    <string name="save_prompt">Save prompt</string>
 </resources>

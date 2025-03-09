@@ -40,4 +40,6 @@
     <string name="locale">ru</string>
     <string name="search">Поиск...</string>
     <string name="select_date_range">Выберите даты</string>
+    <string name="save">Сохранить</string>
+    <string name="save_prompt">Сохранить запрос</string>
 </resources>

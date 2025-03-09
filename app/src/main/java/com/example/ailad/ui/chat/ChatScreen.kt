@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -32,7 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ailad.R
+import com.example.ailad.entities.Prompt
 import com.example.ailad.ui.MainViewModel
+import com.example.ailad.ui.rag.NewStringDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.ZoneOffset
@@ -61,7 +64,7 @@ fun ChatScreen(
     val scope = rememberCoroutineScope()
     val searchBarText by viewModel.searchBarText
 
-
+    var savePromptText: String? by remember { mutableStateOf(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -81,20 +84,25 @@ fun ChatScreen(
                 text = searchText,
                 onTextChange = { searchText = it },
                 textFieldVisible = textFieldVisible,
-                onTextFieldVisibleChange = { textFieldVisible = it; searchText = "" },
+                onTextFieldVisibleChange = {
+                    textFieldVisible = it; searchText = ""; dateRangePickerState.setSelection(
+                    null,
+                    null
+                )
+                },
                 datePickerState = dateRangePickerState,
-                onDatePickerStateChange = { }
+                onDatePickerStateChange = { dateRangePickerState.setSelection(null, null) }
 
             )
             val groupedMessages = messages
                 .reversed()
-                .filter { it.text.contains(searchText.trim()) }
+                .filter { it.text.contains(searchText.trim()) || !textFieldVisible }
                 .filter {
                     it.date.minusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000 <=
-                     (dateRangePickerState.selectedEndDateMillis ?: Long.MAX_VALUE)
+                            (dateRangePickerState.selectedEndDateMillis ?: Long.MAX_VALUE)
                             &&
-                     (dateRangePickerState.selectedStartDateMillis ?: Long.MIN_VALUE) <=
-                    it.date.toEpochSecond(ZoneOffset.UTC) * 1000
+                            (dateRangePickerState.selectedStartDateMillis ?: Long.MIN_VALUE) <=
+                            it.date.toEpochSecond(ZoneOffset.UTC) * 1000
                             || !textFieldVisible
 
                 }
@@ -110,7 +118,12 @@ fun ChatScreen(
 //                        DateStickyHeader(date)
 //                    }
                     items(messagesForDate.size) { index ->
-                        MessageCard(messagesForDate[index])
+                        MessageCard(
+                            messagesForDate[index],
+                            onSavePromptClick = {
+                                savePromptText = it
+                            }
+                        )
                     }
                 }
             }
@@ -145,6 +158,25 @@ fun ChatScreen(
                 },
                 modifier = if (showRAGPanel) Modifier else Modifier.imePadding()
             )
+
+            val text = savePromptText
+            if (text != null) {
+                NewStringDialog(
+                    text = text,
+                    title = stringResource(R.string.save_prompt),
+                    hint = stringResource(R.string.prompt),
+                    stringCantBeEmptyHint = stringResource(R.string.prompt_can_t_be_empty),
+                    onDismissRequest = { savePromptText = null },
+                    onAddPerson = {
+                        viewModel.insertPrompt(
+                            Prompt(0, text)
+                        )
+                        savePromptText = null
+                    }
+                )
+            }
+
+
             val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
             if (showRAGPanel) {
                 ModalBottomSheet(

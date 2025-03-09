@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +33,11 @@ import java.time.format.FormatStyle
 
 
 @Composable
-fun MessageCard(message: Message, modifier: Modifier = Modifier) {
+fun MessageCard(
+    message: Message,
+    onSavePromptClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val backgroundColor =
         if (message.isResponse) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surfaceVariant
     val alignment = if (!message.isResponse) Alignment.CenterEnd else Alignment.CenterStart
@@ -108,14 +113,33 @@ fun MessageCard(message: Message, modifier: Modifier = Modifier) {
                     // Spacer(modifier = Modifier.height(0.5.dp))
                 }
             }
-            Text(
-                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(message.date),
-                Modifier
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
                     .align(if (!message.isResponse) Alignment.End else Alignment.Start)
-                    .padding(horizontal = if (message.isResponse) 6.dp else 4.dp),
-                fontSize = 10.sp,
-                color = Color.Gray
-            )
+            ) {
+
+                if (!message.isResponse) {
+
+                    IconButton(
+                        onClick = { onSavePromptClick(message.text) },
+                        Modifier
+                            .size(14.dp)
+                            .padding(bottom = 1.dp)
+                    ) {
+                        Icon(painterResource(R.drawable.baseline_save_24), "save prompt")
+                    }
+
+
+                }
+                Text(
+                    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(message.date),
+                    Modifier
+                        .padding(horizontal = if (message.isResponse) 6.dp else 4.dp),
+                    fontSize = 10.sp,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }
